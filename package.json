@@ -1,0 +1,24 @@
+{
+  "name": "auth-session",
+  "version": "1.0.0",
+  "description": "A simple authentication session example in Node.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zombiepaladin/auth-session.git"
+  },
+  "keywords": [
+    "session",
+    "authentication"
+  ],
+  "author": "Nathan H. Bean",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zombiepaladin/auth-session/issues"
+  },
+  "homepage": "https://github.com/zombiepaladin/auth-session#readme"
+}
