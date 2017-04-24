@@ -21,27 +21,39 @@ var server = new http.Server(handleRequest);
  */
 function handleRequest(req, res) {
 
+  // We start by creating an empty session
+  req.session = {}
+
   // We need to determine if there is a logged-in user.
   // We'll check for a session cookie
-  var cookies = parseCookie(req.headers.cookie);
+  var cookie = req.headers.cookie;
 
-  // To better protect against manipulation of the session
-  // cookie, we encrypt it before sending it to the
-  // client.  Therefore, the cookie they send back is
-  // likewise encrypted, and must be decrypted before
-  // we can make sense of it.
-  var cryptedSession = cookies["cryptsession"];
+  // First, we need to check to see if a cookie was even
+  // sent to us.  The first time a client visits our site,
+  // they will not have a cookie for it, because we haven't
+  // sent them a set-cookie header in a response.  Also,
+  // if they turn off cookies in thier browser, there will
+  // be no cookies.
+  if(cookie) {
+    // Since we have a cookie, we'll use our cookie-parser
+    // library to parse it into an associative array (a map).
+    var cookieMap = parseCookie(cookie);
 
-  // There may not yet be a session
-  if(!cryptedSession) {
-    // if not, set req.session to be empty
-    req.session = {}
-  } else {
-    // if so, the session is encrypted, and must be decrypted
-    var sessionData = encryption.decipher(cryptedSession);
-    // further, it is in JSON form, so parse it and set the
-    // req.session object to be its parsed value
-    req.session = JSON.parse(sessionData);
+    // To better protect against manipulation of the session
+    // cookie, we encrypt it before sending it to the
+    // client.  Therefore, the cookie they send back is
+    // likewise encrypted, and must be decrypted before
+    // we can make sense of it.
+    var cryptedSession = cookieMap["cryptsession"];
+
+    // There may not yet be a session
+    if(cryptedSession) {
+      // if there is, the session is encrypted, and must be decrypted
+      var sessionData = encryption.decipher(cryptedSession);
+      // further, it is in JSON form, so parse it and set the
+      // req.session object to be its parsed value
+      req.session = JSON.parse(sessionData);
+    }
   }
 
   switch(req.url) {
